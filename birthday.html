@@ -1,0 +1,525 @@
+<!-- SAVE AS index.html -->
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>A Cinematic Birthday Surprise | For Zill</title>
+
+    <link
+        href="https://fonts.googleapis.com/css2?family=Dancing+Script:wght@700&family=Montserrat:wght@300;400;600&family=Playfair+Display:wght@700;900&display=swap"
+        rel="stylesheet">
+
+    <style>
+        :root {
+            --accent: #ff2d55;
+            --accent-glow: rgba(255, 45, 85, 0.5);
+            --bg-dark: #0a0a0b;
+            --glass: rgba(255, 255, 255, 0.05);
+            --glass-border: rgba(255, 255, 255, 0.1);
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Montserrat', sans-serif;
+            overflow-x: hidden;
+            background: #000;
+            color: white;
+        }
+
+        .page {
+            position: absolute;
+            inset: 0;
+            width: 100%;
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            flex-direction: column;
+            opacity: 0;
+            visibility: hidden;
+            transition: 1s;
+            padding: 20px;
+        }
+
+        .active {
+            opacity: 1;
+            visibility: visible;
+            z-index: 10;
+        }
+
+        /* HERO */
+        #hero-page {
+            background: radial-gradient(circle at center, #1a0a0c, #000);
+        }
+
+        .hero-title {
+            font-family: 'Playfair Display', serif;
+            font-size: clamp(3rem, 8vw, 6rem);
+            text-align: center;
+            background: linear-gradient(to right, #fff, #ff2d55, #fff);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            margin-bottom: 20px;
+        }
+
+        .hero-sub {
+            letter-spacing: 4px;
+            text-transform: uppercase;
+            color: rgba(255,255,255,0.7);
+            margin-bottom: 40px;
+            text-align: center;
+        }
+
+        /* BUTTON */
+        .btn {
+            padding: 18px 45px;
+            border-radius: 50px;
+            border: 1px solid var(--accent);
+            background: transparent;
+            color: white;
+            font-size: 1rem;
+            cursor: pointer;
+            transition: 0.4s;
+        }
+
+        .btn:hover {
+            background: var(--accent);
+            box-shadow: 0 0 30px var(--accent);
+            transform: scale(1.05);
+        }
+
+        /* CARD */
+        .card {
+            width: 90%;
+            max-width: 550px;
+            background: var(--glass);
+            backdrop-filter: blur(20px);
+            border: 1px solid var(--glass-border);
+            border-radius: 30px;
+            padding: 50px 40px;
+            text-align: center;
+        }
+
+        .step {
+            display: none;
+        }
+
+        .step.active {
+            display: block;
+        }
+
+        .step h2 {
+            font-size: 2rem;
+            margin-bottom: 30px;
+        }
+
+        /* CELEBRATION */
+        #celebration-page {
+            background: #000;
+        }
+
+        /* CURTAIN */
+        #curtain-page {
+            background: #000;
+            overflow: hidden;
+        }
+
+        .curtain {
+            position: absolute;
+            top: 0;
+            width: 50%;
+            height: 100%;
+            background: linear-gradient(to right, #6e0000, #3d0000);
+            transition: 2s;
+            z-index: 20;
+        }
+
+        .left {
+            left: 0;
+        }
+
+        .right {
+            right: 0;
+        }
+
+        .open .left {
+            transform: translateX(-100%);
+        }
+
+        .open .right {
+            transform: translateX(100%);
+        }
+
+        .message-box {
+            max-width: 750px;
+            width: 90%;
+            text-align: center;
+            padding: 40px;
+            background: rgba(255,255,255,0.05);
+            border-radius: 30px;
+            backdrop-filter: blur(10px);
+        }
+
+        .message-box h1 {
+            font-family: 'Dancing Script', cursive;
+            font-size: 4rem;
+            color: var(--accent);
+            margin-bottom: 20px;
+        }
+
+        .message-box p {
+            line-height: 1.8;
+            color: rgba(255,255,255,0.85);
+            font-size: 1.1rem;
+        }
+
+        /* GALLERY */
+        #gallery-page {
+            background: #050505;
+            overflow-y: auto;
+            display: block;
+            padding: 80px 20px;
+        }
+
+        .gallery-title {
+            text-align: center;
+            font-size: 4rem;
+            color: var(--accent);
+            font-family: 'Dancing Script', cursive;
+            margin-bottom: 60px;
+        }
+
+        .gallery {
+            max-width: 1200px;
+            margin: auto;
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 30px;
+        }
+
+        .memory {
+            position: relative;
+            overflow: hidden;
+            border-radius: 25px;
+            height: 420px;
+            cursor: pointer;
+            background: #111;
+        }
+
+        .memory img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            transition: 0.6s;
+        }
+
+        .memory:hover img {
+            transform: scale(1.1);
+        }
+
+        .overlay {
+            position: absolute;
+            inset: 0;
+            background: rgba(0,0,0,0.7);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            opacity: 0;
+            transition: 0.5s;
+            padding: 20px;
+        }
+
+        .memory:hover .overlay {
+            opacity: 1;
+        }
+
+        .overlay p {
+            font-family: 'Dancing Script', cursive;
+            font-size: 2rem;
+            text-align: center;
+        }
+
+        /* HEARTS */
+        .heart {
+            position: absolute;
+            bottom: -50px;
+            color: #ff2d55;
+            animation: float 5s linear forwards;
+        }
+
+        @keyframes float {
+            from {
+                transform: translateY(0);
+                opacity: 1;
+            }
+
+            to {
+                transform: translateY(-110vh);
+                opacity: 0;
+            }
+        }
+
+        @media(max-width:768px) {
+
+            .message-box h1 {
+                font-size: 3rem;
+            }
+
+            .gallery-title {
+                font-size: 3rem;
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+    <!-- HERO PAGE -->
+    <section id="hero-page" class="page active">
+
+        <h1 class="hero-title">Happy Birthday Zill</h1>
+
+        <p class="hero-sub">
+            A Cinematic Journey Created Just For You
+        </p>
+
+        <button class="btn" onclick="goTo('slider-page')">
+            Open Your Gift
+        </button>
+
+    </section>
+
+    <!-- SLIDER PAGE -->
+    <section id="slider-page" class="page">
+
+        <div class="card">
+
+            <div class="step active" id="s1">
+                <h2>It's Your Special Day ❤️</h2>
+
+                <button class="btn" onclick="next(2)">
+                    Next
+                </button>
+            </div>
+
+            <div class="step" id="s2">
+                <h2>Have a look at it Madam Ji ✨</h2>
+
+                <button class="btn" onclick="next(3)">
+                    Next
+                </button>
+            </div>
+
+            <div class="step" id="s3">
+                <h2>Ready for your surprise? 🎁</h2>
+
+                <button class="btn" onclick="goTo('celebration-page')">
+                    Let's Go
+                </button>
+            </div>
+
+        </div>
+
+    </section>
+
+    <!-- CELEBRATION PAGE -->
+    <section id="celebration-page" class="page">
+
+        <h1 style="margin-bottom:30px;font-size:3rem;">
+            The Stage is Set ✨
+        </h1>
+
+        <button class="btn" onclick="openCurtain()">
+            Show Message
+        </button>
+
+    </section>
+
+    <!-- CURTAIN PAGE -->
+    <section id="curtain-page" class="page">
+
+        <div id="curtain-container">
+
+            <div class="curtain left"></div>
+            <div class="curtain right"></div>
+
+            <div class="message-box">
+
+                <h1>My Dearest Zill</h1>
+
+                <p>
+                    Today isn't just another date on the calendar.
+                    It's the celebration of someone truly special.
+                    Your smile brings happiness,
+                    your presence brings peace,
+                    and every memory with you feels magical.
+                    May your life always shine with love,
+                    success, laughter and endless beautiful moments.
+                    Happy Birthday once again ❤️
+                </p>
+
+                <br><br>
+
+                <button class="btn" onclick="goTo('gallery-page')">
+                    Our Memories
+                </button>
+
+            </div>
+
+        </div>
+
+    </section>
+
+    <!-- GALLERY PAGE -->
+    <section id="gallery-page" class="page">
+
+        <h1 class="gallery-title">
+            Moments In Time
+        </h1>
+
+        <div class="gallery">
+
+            <!-- MEMORY 1 -->
+            <div class="memory">
+
+                <!-- YOUR PHOTO -->
+                <img src="image/Photo1.jpeg" alt="Memory">
+
+                <div class="overlay">
+                    <p>Concert nights & beautiful memories ❤️</p>
+                </div>
+
+            </div>
+
+            <!-- MEMORY 2 -->
+            <div class="memory">
+
+                <!-- YOUR PHOTO -->
+                <img src="image/Photo2.jpeg" alt="Memory">
+
+                <div class="overlay">
+                    <p>Forever my favorite person ✨</p>
+                </div>
+
+            </div> 
+
+   
+
+            <!-- MEMORY 3 -->
+            <div class="memory">
+
+                <!-- PUT YOUR PHOTO -->
+                <img src="image/Photo3.jpeg" alt="Memory">
+
+                <div class="overlay">
+                    <p>Always & Forever 🌹</p>
+                </div>
+
+            </div>
+
+            <!-- MEMORY 4 -->
+            <div class="memory">
+
+                <!-- PUT YOUR PHOTO -->
+                <img src="image/Photo4.jpeg" alt="Memory">
+
+                <div class="overlay">
+                    <p>My favorite person 💖</p>
+                </div>
+
+            </div>
+
+            <!-- MEMORY 5 -->
+            <div class="memory">
+
+                <!-- PUT YOUR PHOTO -->
+                <img src="image/Photo5.jpeg" alt="Memory">
+
+                <div class="overlay">
+                    <p>Beautiful moments together 🥂</p>
+                </div>
+
+            </div>
+
+            <!-- MEMORY 6 -->
+            <div class="memory">
+
+                <!-- PUT YOUR PHOTO -->
+                <img src="image/Photo6.jpeg" alt="Memory">
+
+                <div class="overlay">
+                    <p>Forever my happiness ❤️</p>
+                </div>
+
+            </div>
+
+        </div>
+
+    </section>
+
+    <!-- MUSIC
+    <audio autoplay loop>
+        <source src="music.mp3" type="audio/mpeg">
+    </audio> -->
+
+    <script>
+
+        function goTo(id) {
+
+            document.querySelectorAll('.page').forEach(page => {
+                page.classList.remove('active');
+            });
+
+            document.getElementById(id).classList.add('active');
+        }
+
+        function next(step) {
+
+            document.querySelectorAll('.step').forEach(s => {
+                s.classList.remove('active');
+            });
+
+            document.getElementById('s' + step).classList.add('active');
+        }
+
+        function openCurtain() {
+
+            goTo('curtain-page');
+
+            setTimeout(() => {
+                document.getElementById('curtain-container').classList.add('open');
+            }, 500);
+        }
+
+        // Floating Hearts
+        setInterval(() => {
+
+            const heart = document.createElement('div');
+
+            heart.classList.add('heart');
+
+            heart.innerHTML = '❤️';
+
+            heart.style.left = Math.random() * 100 + 'vw';
+
+            heart.style.fontSize = (Math.random() * 20 + 15) + 'px';
+
+            document.body.appendChild(heart);
+
+            setTimeout(() => {
+                heart.remove();
+            }, 5000);
+
+        }, 300);
+
+    </script>
+
+</body>
+</html>
